@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkyPulse | Clima Premium</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+{# Determina a classe de tema baseado no ícone do clima #}
+{% set icon = weather.icon if weather else '' %}
+{% if 'rain' in icon or 'storm' in icon %}
+    {% set theme = 'rainy' %}
+{% elif 'cloud' in icon %}
+    {% set theme = 'cloudy' %}
+{% elif 'night' in icon %}
+    {% set theme = 'clear-night' %}
+{% elif weather %}
+    {% set theme = 'sunny' %}
+{% else %}
+    {% set theme = '' %}
+{% endif %}
+
+<body class="{{ theme }}">
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-content">
+            <div class="loading-icon"><i data-lucide="cloud"></i></div>
+            <div class="loading-spinner"></div>
+            <p>Consultando dados atmosféricos...</p>
+        </div>
+    </div>
+
+    <div class="bg-circles">
+        <div class="circle" style="width: 400px; height: 400px; top: -100px; right: -100px;"></div>
+        <div class="circle" style="width: 300px; height: 300px; bottom: -50px; left: -50px; animation-delay: -5s;"></div>
+    </div>
+
+    <main class="container">
+        <!-- Formulário de Busca -->
+        <header class="search-container">
+            <form action="/" method="GET" class="search-form" id="searchForm">
+                <input type="text" name="cidade" id="cityInput"
+                       value="{{ cidade }}"
+                       placeholder="Digite o nome da cidade (ex: São Paulo)..." autofocus>
+                <button type="submit">
+                    <i data-lucide="search"></i>
+                    Buscar
+                </button>
+            </form>
+        </header>
+
+        {# Mensagem de Erro #}
+        {% if error %}
+        <div class="error-msg" style="display: block;">{{ error }}</div>
+        {% endif %}
+
+        {# Conteúdo do Clima — só renderiza se houver dados #}
+        {% if weather %}
+        <div id="weatherContent">
+            <!-- Informação Principal -->
+            <section class="main-weather">
+                <div class="city-info">
+                    <h1>{{ weather.cidade }}</h1>
+                    <p>{{ weather.data }}</p>
+                    {% if weather.hora %}
+                    <p class="hora">Atualizado às {{ weather.hora }}</p>
+                    {% endif %}
+                </div>
+                <div class="temp-container">
+                    <div class="temp-main">{{ weather.temperatura | round | int }}°</div>
+                    <div class="weather-desc">{{ weather.icon | replace('-', ' ') }}</div>
+                </div>
+            </section>
+
+            <!-- Grid de Stats -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="droplets"></i></div>
+                    <div class="stat-info">
+                        <span>Umidade</span>
+                        <b>{{ weather.umidade | round | int }}%</b>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="wind"></i></div>
+                    <div class="stat-info">
+                        <span>Ventos</span>
+                        <b>{{ weather.vento | round | int }} km/h</b>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon"><i data-lucide="cloud-rain"></i></div>
+                    <div class="stat-info">
+                        <span>Precipitação</span>
+                        <b>{{ weather.precipitacao | default(0) }} mm</b>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Previsão 7 Dias -->
+            <section class="forecast-section">
+                <h3 class="forecast-title">Próximos {{ weather.previsao | length }} Dias</h3>
+                <div class="forecast-scroll">
+                    {% for dia in weather.previsao %}
+                    {# Mapeamento do ícone da API para ícone Lucide #}
+                    {% set icon_map = {
+                        'clear-day': 'sun',
+                        'clear-night': 'moon',
+                        'rain': 'cloud-rain',
+                        'snow': 'snowflake',
+                        'sleet': 'cloud-hail',
+                        'wind': 'wind',
+                        'fog': 'cloud-fog',
+                        'cloudy': 'cloud',
+                        'partly-cloudy-day': 'cloud-sun',
+                        'partly-cloudy-night': 'cloud-moon'
+                    } %}
+                    {% set lucide_icon = icon_map.get(dia.icon, 'cloud') %}
+
+                    <div class="forecast-card">
+                        <div class="day">
+                            {% if loop.first %}
+                                Hoje
+                            {% else %}
+                                {{ dia.data }}
+                            {% endif %}
+                        </div>
+                        <div class="icon"><i data-lucide="{{ lucide_icon }}"></i></div>
+                        <div class="temps">
+                            <span>{{ dia.temperatura_max | round | int }}°</span>
+                            <span class="min">{{ dia.temperatura_min | round | int }}°</span>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </section>
+        </div>
+
+        {% elif not error %}
+        <!-- Estado Inicial — nenhuma busca feita ainda -->
+        <div class="empty-state">
+            <div class="empty-icon"><i data-lucide="cloud-sun"></i></div>
+            <h2>Bem-vindo ao SkyPulse</h2>
+            <p>Digite o nome de uma cidade acima para consultar o clima em tempo real.</p>
+        </div>
+        {% endif %}
+
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        // Exibe o loading ao submeter o formulário
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            var city = document.getElementById('cityInput').value.trim();
+            if (city.length < 2) return;
+            document.getElementById('loadingOverlay').classList.add('active');
+        });
+    </script>
+</body>
+</html>

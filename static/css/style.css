@@ -1,0 +1,375 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --text-primary: #ffffff;
+    --text-secondary: rgba(255, 255, 255, 0.7);
+    --accent: #60a5fa;
+    --bg-gradient: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+    --shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Temas dinâmicos baseados no clima */
+body.sunny { --bg-gradient: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+body.rainy { --bg-gradient: linear-gradient(135deg, #334155 0%, #1e293b 100%); }
+body.cloudy { --bg-gradient: linear-gradient(135deg, #64748b 0%, #334155 100%); }
+body.clear-night { --bg-gradient: linear-gradient(135deg, #1e1b4b 0%, #0c0a09 100%); }
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+    min-height: 100vh;
+    background: var(--bg-gradient);
+    color: var(--text-primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    transition: background 1s ease;
+    overflow-x: hidden;
+}
+
+/* Background Animation Elements */
+.bg-circles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.circle {
+    position: absolute;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--accent) 0%, transparent 70%);
+    filter: blur(60px);
+    opacity: 0.15;
+    animation: move 20s infinite alternate;
+}
+
+@keyframes move {
+    from { transform: translate(-20%, -20%); }
+    to { transform: translate(20%, 20%); }
+}
+
+.container {
+    width: 100%;
+    max-width: 1000px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--glass-border);
+    border-radius: 2rem;
+    padding: 2.5rem;
+    box-shadow: var(--shadow);
+    animation: fadeIn 0.8s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Search Bar */
+.search-container {
+    margin-bottom: 3rem;
+}
+
+.search-form {
+    display: flex;
+    gap: 1rem;
+}
+
+input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 1rem;
+    padding: 1rem 1.5rem;
+    color: white;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--accent);
+    box-shadow: 0 0 0 4px rgba(96, 165, 250, 0.1);
+}
+
+button {
+    background: var(--accent);
+    border: none;
+    border-radius: 1rem;
+    padding: 0 1.5rem;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 4px 12px rgba(96, 165, 250, 0.3);
+}
+
+button:active { transform: translateY(0); }
+
+/* Main Section */
+.main-weather {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 3rem;
+}
+
+.city-info h1 {
+    font-size: 3rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.city-info p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.temp-container {
+    text-align: right;
+}
+
+.temp-main {
+    font-size: 6rem;
+    font-weight: 300;
+    line-height: 1;
+}
+
+.weather-desc {
+    font-size: 1.25rem;
+    color: var(--text-secondary);
+    text-transform: capitalize;
+}
+
+/* Stats Grid */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 1.5rem;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover { border-color: var(--accent); background: rgba(255, 255, 255, 0.05); }
+
+.stat-icon {
+    width: 40px;
+    height: 40px;
+    background: rgba(96, 165, 250, 0.1);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+}
+
+.stat-info span {
+    display: block;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.stat-info b { font-size: 1.1rem; }
+
+/* Forecast Section */
+.forecast-title {
+    margin-bottom: 1.5rem;
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+.forecast-scroll {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 1rem;
+}
+
+.forecast-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--glass-border);
+    border-radius: 1.25rem;
+    padding: 1rem;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.forecast-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--accent);
+}
+
+.forecast-card .day {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.75rem;
+}
+
+.forecast-card .icon {
+    font-size: 2rem;
+    margin: 0.5rem 0;
+}
+
+.forecast-card .temps {
+    font-weight: 600;
+}
+
+.forecast-card .min {
+    font-weight: 400;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.loading-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+}
+
+.loading-content {
+    text-align: center;
+    color: white;
+}
+
+.loading-content p {
+    margin-top: 1.5rem;
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    letter-spacing: 0.5px;
+}
+
+.loading-icon {
+    position: relative;
+    display: inline-block;
+    color: var(--accent);
+    animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-icon i,
+.loading-icon svg {
+    width: 48px;
+    height: 48px;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.15); opacity: 0.7; }
+}
+
+.loading-spinner {
+    width: 80px;
+    height: 80px;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 1rem auto 0;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Error Toast */
+.error-msg {
+    display: none;
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.empty-state .empty-icon {
+    margin-bottom: 1.5rem;
+    color: var(--accent);
+}
+
+.empty-state .empty-icon i,
+.empty-state .empty-icon svg {
+    width: 64px;
+    height: 64px;
+}
+
+.empty-state h2 {
+    font-size: 1.75rem;
+    margin-bottom: 0.75rem;
+}
+
+.empty-state p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+.hora {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    opacity: 0.7;
+    margin-top: 0.25rem;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .main-weather { flex-direction: column; text-align: center; gap: 2rem; }
+    .temp-container { text-align: center; }
+    .stats-grid { grid-template-columns: 1fr; }
+    .forecast-scroll { grid-template-columns: repeat(4, 1fr); overflow-x: auto; padding-bottom: 1rem; }
+}
+
+@media (max-width: 480px) {
+    .forecast-scroll { grid-template-columns: repeat(3, 1fr); }
+    .container { padding: 1.5rem; }
+}
